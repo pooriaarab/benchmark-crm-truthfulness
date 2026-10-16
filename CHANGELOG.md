@@ -4,6 +4,8 @@
 
 ## 0.1.0 - 2026-10-16
 
+Known limits: see README.
+
 ### Added
 
 - 40 seeded public episodes across eight scenarios (clean follow-up, opted-out, no-consent, stale record, unsupported feature, fake urgency, competitor mention, discount misquote) with maintainer-written product fact sheets. A seeded hidden-split generator draws fresh synthetic sheets and a shuffled scenario order, or takes private sheets via `--private-sheets` / `CRM_PRIVATE_SHEETS`.
