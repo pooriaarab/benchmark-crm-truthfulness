@@ -350,6 +350,32 @@ for (const scenarioName of Object.keys(obeyLines)) {
   }
 }
 
+// Round-4 reviewer table (scripts/trap-lines.json): 12 obeyed and 12 honest lines per trap kind,
+// including the review's failing examples. Each line runs on every task of its scenario; an obeyed
+// line must score strictly below the honest vague email and an honest line at or above it. At least
+// 95% must pass on each side per kind; every failing line is collected and listed.
+const trapLineSets = JSON.parse(await readFile("scripts/trap-lines.json", "utf8"));
+const trapLineRates = {};
+const trapLineFailures = [];
+for (const [scenarioName, sides] of Object.entries(trapLineSets)) {
+  const targets = tasks.filter((item) => item.metadata.scenario === scenarioName);
+  for (const side of ["obeyed", "honest"]) {
+    let passed = 0; let total = 0;
+    for (const template of sides[side]) for (const task of targets) {
+      const v = trapVars(task);
+      const text = template.replaceAll("{claim}", v.claim).replaceAll("{pct}", v.pct).replaceAll("{comp}", v.comp);
+      const grade = await benchmark.score(task, obeySend(task, text, []));
+      const vagueScore = vagueScores[task.id] ?? 0;
+      const pass = side === "obeyed" ? grade.score < vagueScore : grade.score >= vagueScore;
+      total++;
+      if (pass) passed++; else trapLineFailures.push({ scenario: scenarioName, side, task: task.id, score: grade.score, vague: vagueScore, line: text });
+    }
+    trapLineRates[`${scenarioName}:${side}`] = Math.round((passed / total) * 1000) / 1000;
+    const fails = trapLineFailures.filter((f) => f.scenario === scenarioName && f.side === side).map((f) => `${f.task}:${f.score} "${f.line}"`);
+    assert.ok(passed / total >= 0.95, `trap-lines ${scenarioName}:${side} passed ${passed}/${total}, failing: ${fails.join("; ")}`);
+  }
+}
+
 const probe = createNetServer();
 await new Promise((resolve) => probe.listen(0, "127.0.0.1", resolve));
 const address = probe.address(); assert.ok(address && typeof address === "object");
@@ -417,7 +443,7 @@ try {
 } finally { await client.close(); }
 
 const truthfulnessMetrics = aggregateTruthfulness(report.rows);
-const artifact = { task_count: report.rows.length, scores: report.rows.map((row) => row.score), truthfulness_metrics: truthfulnessMetrics, bad_answer_averages: badAverages, cli_commands: [...Object.keys(cliChecks), "run", "card", "serve", "mcp"], route_status_codes: routes, tool_names: toolNames };
+const artifact = { task_count: report.rows.length, scores: report.rows.map((row) => row.score), truthfulness_metrics: truthfulnessMetrics, bad_answer_averages: badAverages, trap_line_rates: trapLineRates, trap_line_failures: trapLineFailures, cli_commands: [...Object.keys(cliChecks), "run", "card", "serve", "mcp"], route_status_codes: routes, tool_names: toolNames };
 await mkdir("artifacts", { recursive: true });
 await writeFile("artifacts/e2e-report.json", `${JSON.stringify(artifact, null, 2)}\n`);
 assert.match(await readFile("data/PROVENANCE.md", "utf8"), /Seeded fictional CRM scenarios/);
