@@ -1,0 +1,19 @@
+# benchmark-crm-truthfulness
+
+> Does a sales agent claim only what the evidence supports?
+
+Package: https://www.npmjs.com/package/benchmark-crm-truthfulness
+Repository: https://github.com/pooriaarab/benchmark-crm-truthfulness
+Directory: https://aibenchmarkindex.com/benchmarks/benchmark-crm-truthfulness
+
+## Exports
+
+The root exports `benchmark`, `run`, and `score`. `benchmark-crm-truthfulness/api` exports the fetch-style `handler`. `benchmark-crm-truthfulness/mcp` exports MCP builders.
+
+## Commands
+
+The CLI supports list, show, run, score, card, provenance, index-entry, serve, and mcp. Use the mock provider for offline verification.
+
+## Verification
+
+Run `npm run ci:local`. The report is `artifacts/e2e-report.json`.
