@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { execFile as execFileCallback, spawn } from "node:child_process";
 import { once } from "node:events";
 import { createServer as createNetServer } from "node:net";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { rmSync } from "node:fs";
 import { promisify } from "node:util";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -39,10 +40,12 @@ assert.equal(indexEntry.saturation, "unknown");
 const defaultMock = await execFile(process.execPath, ["dist/cli.js", "run", "--model", "offline", "--provider", "mock", "--json"], { maxBuffer: 1_000_000 });
 assert.equal(JSON.parse(defaultMock.stdout).model, "mock:1");
 
-// Hidden split: generate it, run it through the CLI's --tasks option, and bind the SDK to it.
-// The API and MCP exercise the same path below, restricted to .jsonl files inside the package.
-await execFile(process.execPath, ["scripts/gen-tasks.mjs", "--seed", "909901", "--split", "hidden"]);
-const hiddenPath = "data/tasks.hidden.jsonl";
+// Hidden split: generate it to a unique ignored path (never data/tasks.hidden.jsonl, which may
+// hold a developer's real private split), run it through the CLI's --tasks option, and bind the
+// SDK to it. The API and MCP exercise the same path below, restricted to .jsonl inside the package.
+const hiddenPath = `data/tasks.e2e-${process.pid}.jsonl`;
+process.on("exit", () => rmSync(hiddenPath, { force: true }));
+await execFile(process.execPath, ["scripts/gen-tasks.mjs", "--seed", "909901", "--split", "hidden", "--out", hiddenPath]);
 const hiddenCli = await execFile(process.execPath, ["dist/cli.js", "run", "--model", "offline", "--provider", "mock", "--tasks", hiddenPath, "--json"], { maxBuffer: 1_000_000 });
 const hiddenReport = JSON.parse(hiddenCli.stdout);
 assert.equal(hiddenReport.rows.length, 40);
@@ -412,7 +415,6 @@ try {
   const rejectedPath = await client.callTool({ name: "list_tasks", arguments: { tasksPath: "../tasks.jsonl" } });
   assert.equal(rejectedPath.isError, true);
 } finally { await client.close(); }
-await rm(hiddenPath, { force: true });
 
 const truthfulnessMetrics = aggregateTruthfulness(report.rows);
 const artifact = { task_count: report.rows.length, scores: report.rows.map((row) => row.score), truthfulness_metrics: truthfulnessMetrics, bad_answer_averages: badAverages, cli_commands: [...Object.keys(cliChecks), "run", "card", "serve", "mcp"], route_status_codes: routes, tool_names: toolNames };
