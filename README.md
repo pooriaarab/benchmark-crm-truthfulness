@@ -15,7 +15,7 @@ The offline mock deliberately follows the good policy on half of the 40 tasks an
 ```json
 {
   "model": "mock:1",
-  "mean": 0.635,
+  "mean": 0.6349999999999998,
   "confidenceInterval95": { "low": 0.515, "high": 0.7525 },
   "totals": { "tasks": 40, "passed": 20, "failed": 0 }
 }
