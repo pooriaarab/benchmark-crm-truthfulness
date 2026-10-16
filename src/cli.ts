@@ -19,7 +19,7 @@ async function runCommand(args: string[]): Promise<number> {
   const jsonOutput = args.includes("--json");
   const parsed = parseArgs({
     args: args.filter((arg) => arg !== "--json"),
-    options: { model: { type: "string" }, provider: { type: "string" }, concurrency: { type: "string" }, timeout: { type: "string" }, retries: { type: "string" }, seed: { type: "string" }, "max-turns": { type: "string" }, "max-tool-calls": { type: "string" }, budget: { type: "string" } },
+    options: { model: { type: "string" }, provider: { type: "string" }, tasks: { type: "string" }, concurrency: { type: "string" }, timeout: { type: "string" }, retries: { type: "string" }, seed: { type: "string" }, "max-turns": { type: "string" }, "max-tool-calls": { type: "string" }, budget: { type: "string" } },
     strict: true,
   });
   const model = parsed.values.model;
@@ -27,6 +27,7 @@ async function runCommand(args: string[]): Promise<number> {
   if (!model || !provider) throw new Error("run needs --model and --provider.");
   const seed = Number(parsed.values.seed ?? 1);
   const result = await run(adapter(provider, model, seed), {
+    ...(parsed.values.tasks ? { tasksPath: parsed.values.tasks } : {}),
     ...(parsed.values.concurrency ? { concurrency: Number(parsed.values.concurrency) } : {}),
     ...(parsed.values.timeout ? { timeoutMs: Number(parsed.values.timeout) } : {}),
     ...(parsed.values.retries ? { retries: Number(parsed.values.retries) } : {}),

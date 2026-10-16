@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { execFile as execFileCallback, spawn } from "node:child_process";
 import { once } from "node:events";
 import { createServer as createNetServer } from "node:net";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -11,7 +11,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 const execFile = promisify(execFileCallback);
 
 await execFile("npm", ["run", "build"]);
-const { benchmark, truthfulnessMetrics: aggregateTruthfulness } = await import("../dist/index.js");
+const { benchmark, benchmarkWithTasks, truthfulnessMetrics: aggregateTruthfulness } = await import("../dist/index.js");
 const cli = await execFile(process.execPath, ["dist/cli.js", "run", "--model", "offline", "--provider", "mock", "--json"], { maxBuffer: 1_000_000 });
 const report = JSON.parse(cli.stdout);
 assert.equal(report.rows.length, 40);
@@ -39,7 +39,21 @@ assert.equal(indexEntry.saturation, "unknown");
 const defaultMock = await execFile(process.execPath, ["dist/cli.js", "run", "--model", "offline", "--provider", "mock", "--json"], { maxBuffer: 1_000_000 });
 assert.equal(JSON.parse(defaultMock.stdout).model, "mock:1");
 
+// Hidden split: generate it, run it through the CLI's --tasks option, and bind the SDK to it.
+// The API and MCP exercise the same path below, restricted to .jsonl files inside the package.
+await execFile(process.execPath, ["scripts/gen-tasks.mjs", "--seed", "909901", "--split", "hidden"]);
+const hiddenPath = "data/tasks.hidden.jsonl";
+const hiddenCli = await execFile(process.execPath, ["dist/cli.js", "run", "--model", "offline", "--provider", "mock", "--tasks", hiddenPath, "--json"], { maxBuffer: 1_000_000 });
+const hiddenReport = JSON.parse(hiddenCli.stdout);
+assert.equal(hiddenReport.rows.length, 40);
+assert.ok(hiddenReport.rows.every((row) => row.taskId.startsWith("hidden-")), "hidden run hit public tasks");
+const hiddenBenchmark = benchmarkWithTasks(hiddenPath);
+const hiddenTasks = await hiddenBenchmark.listTasks();
+assert.equal(hiddenTasks.length, 40);
+
 const tasks = await benchmark.listTasks();
+const publicIds = new Set(tasks.map((task) => task.id));
+assert.ok(hiddenTasks.every((task) => !publicIds.has(task.id)), "hidden split shares task ids with public");
 const entry = (name, args) => ({ name, args, result: null });
 // Visible-information policy: it may only read the system text (fact sheet and policy), the task
 // prompt, and tool results — never task.metadata.
@@ -353,6 +367,20 @@ try {
   const scoreBody = await score.json();
   assert.equal(typeof scoreBody.breakdown?.consentViolations, "number");
   assert.equal(typeof scoreBody.breakdown?.recordAccuracy, "number");
+  const hiddenListed = await get(`/v1/tasks?tasks=${hiddenPath}`);
+  assert.equal(hiddenListed.value.tasks.length, 40);
+  assert.ok(hiddenListed.value.tasks.every((task) => task.id.startsWith("hidden-")));
+  const hiddenShown = await get(`/v1/tasks/hidden-001?tasks=${hiddenPath}`);
+  assert.equal(hiddenShown.value.task.id, "hidden-001");
+  assert.equal((await get("/v1/tasks?tasks=../tasks.jsonl")).response.status, 400);
+  assert.equal((await get("/v1/tasks?tasks=package.json")).response.status, 400);
+  const hiddenScore = await fetch(`${base}/v1/score`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ taskId: "hidden-001", submission: { toolLog: await goodLog(hiddenTasks[0]) }, tasksPath: hiddenPath }) });
+  routes["POST /v1/score tasksPath"] = hiddenScore.status;
+  assert.equal(hiddenScore.status, 200);
+  assert.equal((await hiddenScore.json()).taskId, "hidden-001");
+  const escapedScore = await fetch(`${base}/v1/score`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ taskId: "public-001", submission: { toolLog: [] }, tasksPath: "../tasks.jsonl" }) });
+  routes["POST /v1/score escape"] = escapedScore.status;
+  assert.equal(escapedScore.status, 400);
   assert.equal((await get("/v1/provenance")).response.status, 200);
   assert.equal((await get("/v1/index-entry")).value.task_count, 40);
 } finally { if (server.exitCode === null) { server.kill("SIGTERM"); await once(server, "exit"); } }
@@ -376,7 +404,15 @@ try {
       assert.equal(typeof payload.breakdown?.consentViolations, "number");
     }
   }
+  const hiddenList = await client.callTool({ name: "list_tasks", arguments: { tasksPath: hiddenPath } });
+  assert.notEqual(hiddenList.isError, true);
+  assert.ok(JSON.parse(hiddenList.content[0].text).tasks.every((task) => task.id.startsWith("hidden-")));
+  const hiddenMcpScore = await client.callTool({ name: "score_answer", arguments: { taskId: "hidden-001", submission: { toolLog: [] }, tasksPath: hiddenPath } });
+  assert.notEqual(hiddenMcpScore.isError, true);
+  const rejectedPath = await client.callTool({ name: "list_tasks", arguments: { tasksPath: "../tasks.jsonl" } });
+  assert.equal(rejectedPath.isError, true);
 } finally { await client.close(); }
+await rm(hiddenPath, { force: true });
 
 const truthfulnessMetrics = aggregateTruthfulness(report.rows);
 const artifact = { task_count: report.rows.length, scores: report.rows.map((row) => row.score), truthfulness_metrics: truthfulnessMetrics, bad_answer_averages: badAverages, cli_commands: [...Object.keys(cliChecks), "run", "card", "serve", "mcp"], route_status_codes: routes, tool_names: toolNames };
