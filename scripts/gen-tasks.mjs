@@ -10,8 +10,9 @@ const seed = Number(option("seed", "20261015"));
 const split = option("split", "public");
 const count = Number(option("count", "40"));
 const privateSheetsDir = option("private-sheets", process.env.CRM_PRIVATE_SHEETS);
+const outputOption = option("out", undefined);
 if (!Number.isInteger(seed) || !["public", "hidden"].includes(split) || !Number.isInteger(count) || count < 8) {
-  throw new Error("Usage: node scripts/gen-tasks.mjs [--seed N] [--split public|hidden] [--count N] [--private-sheets DIR]");
+  throw new Error("Usage: node scripts/gen-tasks.mjs [--seed N] [--split public|hidden] [--count N] [--private-sheets DIR] [--out PATH]");
 }
 
 function mulberry32(value) {
@@ -320,7 +321,7 @@ for (let index = 0; index < count; index++) {
   });
 }
 
-const output = split === "public" ? "data/tasks.jsonl" : "data/tasks.hidden.jsonl";
+const output = outputOption ?? (split === "public" ? "data/tasks.jsonl" : "data/tasks.hidden.jsonl");
 await mkdir("data", { recursive: true });
 await writeFile(output, `${tasks.map((task) => JSON.stringify(task)).join("\n")}\n`);
 console.log(`generated ${tasks.length} ${split} tasks with seed ${seed} in ${output}`);
