@@ -65,14 +65,14 @@ const report = await run(myAdapter, { seed: 7 });
 console.log(report.mean, report.truthfulness.consentViolationRate);
 ```
 
-`benchmark` is the complete definition. `score(taskId, trace)` grades one trace, and `truthfulnessMetrics(rows)` aggregates an existing report.
+`benchmark` is the complete definition. `score(taskId, trace)` grades one trace, and `truthfulnessMetrics(rows)` aggregates an existing report. Pass `tasksPath` in `run` options to evaluate an alternate task file such as a generated hidden split.
 
 ## CLI
 
 ```text
 benchmark-crm-truthfulness list
 benchmark-crm-truthfulness show <task>
-benchmark-crm-truthfulness run --provider <mock|openrouter|openai> --model <id>
+benchmark-crm-truthfulness run --provider <mock|openrouter|openai> --model <id> [--tasks <path>]
 benchmark-crm-truthfulness score <results.json>
 benchmark-crm-truthfulness card <report.json> [output.svg]
 benchmark-crm-truthfulness provenance
@@ -81,7 +81,7 @@ benchmark-crm-truthfulness serve [port]
 benchmark-crm-truthfulness mcp
 ```
 
-Add `--json` for machine-readable output. `card` writes a 1200×630 SVG.
+Add `--json` for machine-readable output. `card` writes a 1200×630 SVG. `run --tasks <path>` reads tasks from any readable JSONL file. The task routes accept `?tasks=<path>` and `POST /v1/score` accepts a `tasksPath` field; the API and the MCP tools restrict the path to `.jsonl` files inside the installed package.
 
 ## MCP and HTTP
 
@@ -102,7 +102,7 @@ node scripts/gen-tasks.mjs --seed 20261015 --split public
 node scripts/gen-tasks.mjs --seed "${PRIVATE_SEED}" --split hidden --private-sheets "${PRIVATE_SHEETS_DIR}"
 ```
 
-Set `PRIVATE_SEED` and `PRIVATE_SHEETS_DIR` outside the repository (`CRM_PRIVATE_SHEETS` works in place of the flag). A private sheets directory holds one JSON file per product with `product`, `vendor`, `facts`, and `trapClaims`; when it is absent, the generator draws synthetic sheets and a shuffled scenario order from the seed. The hidden command writes an ignored `data/tasks.hidden.jsonl`; keep its seed, sheets, and file private. [data/PROVENANCE.md](data/PROVENANCE.md) records the source, licence, cutoff, refresh cadence, and retrieval commands.
+Set `PRIVATE_SEED` and `PRIVATE_SHEETS_DIR` outside the repository (`CRM_PRIVATE_SHEETS` works in place of the flag). A private sheets directory holds one JSON file per product with `product`, `vendor`, `facts`, and `trapClaims`; when it is absent, the generator draws synthetic sheets and a shuffled scenario order from the seed. The hidden command writes an ignored `data/tasks.hidden.jsonl`; keep its seed, sheets, and file private. Evaluate it with `benchmark-crm-truthfulness run --provider <provider> --model <id> --tasks data/tasks.hidden.jsonl`. [data/PROVENANCE.md](data/PROVENANCE.md) records the source, licence, cutoff, refresh cadence, and retrieval commands.
 
 ## Limits
 

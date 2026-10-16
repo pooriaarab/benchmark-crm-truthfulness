@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
-import { defineBenchmark, type ScriptedTurn, type Task } from "benchmark-core";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineBenchmark, type Benchmark, type ScriptedTurn, type Task } from "benchmark-core";
 import { CrmEnvironment, scenario } from "./environment.js";
 import { gradeCrm } from "./grader.js";
 
-async function loadTasks(): Promise<Task[]> {
-  const text = await readFile(new URL("../data/tasks.jsonl", import.meta.url), "utf8");
+export async function loadTasks(tasksPath?: string): Promise<Task[]> {
+  const text = await readFile(tasksPath ?? new URL("../data/tasks.jsonl", import.meta.url), "utf8");
   return text.trim().split("\n").map((line) => JSON.parse(line) as Task);
 }
 
@@ -55,3 +57,17 @@ export const benchmark = defineBenchmark({
   }],
   gradingMethod: "Deterministic replay of the tool log, a hard consent gate, claim-ledger checks against fact keywords and forbidden patterns, and record-accuracy scoring.",
 });
+
+// A benchmark bound to an alternate task file (a generated hidden split). The CLI accepts any
+// readable path; the API and MCP gate paths through resolvePackageTasksPath.
+export function benchmarkWithTasks(tasksPath: string): Benchmark<Task> {
+  return defineBenchmark({ ...benchmark.definition, loadTasks: () => loadTasks(tasksPath) });
+}
+
+const packageRoot = fileURLToPath(new URL("../", import.meta.url));
+export function resolvePackageTasksPath(value: unknown): string {
+  if (typeof value !== "string" || !value.endsWith(".jsonl")) throw new Error("tasksPath must name a .jsonl file inside the package.");
+  const resolved = resolve(packageRoot, value);
+  if (!resolved.startsWith(packageRoot)) throw new Error("tasksPath must resolve inside the package.");
+  return resolved;
+}

@@ -1,6 +1,7 @@
 import { run as runBenchmark, type ModelAdapter, type RunOptions, type RunRow, type Trace } from "benchmark-core";
-import { benchmark } from "./benchmark.js";
-export { benchmark };
+import { benchmark, benchmarkWithTasks } from "./benchmark.js";
+export { benchmark, benchmarkWithTasks };
+export interface CrmRunOptions extends RunOptions { tasksPath?: string }
 export type TruthfulnessMetrics = { consentViolationRate: number; unsupportedClaims: number; undeclaredClaims: number; patternViolations: number; recordAccuracy: number };
 export function truthfulnessMetrics(rows: RunRow[]): TruthfulnessMetrics {
   const values = rows.map((row) => Object.fromEntries([...row.reason.matchAll(/(consentViolations|unsupportedClaims|undeclaredClaims|patternViolations|recordAccuracy)=([^;]+)/g)].map((match) => [match[1], match[2]])));
@@ -14,8 +15,9 @@ export function truthfulnessMetrics(rows: RunRow[]): TruthfulnessMetrics {
     recordAccuracy: values.reduce((sum, value) => sum + number(value.recordAccuracy), 0) / values.length,
   };
 }
-export async function run(adapter: ModelAdapter, options?: RunOptions) {
-  const report = await runBenchmark(benchmark, adapter, options);
+export async function run(adapter: ModelAdapter, options?: CrmRunOptions) {
+  const { tasksPath, ...rest } = options ?? {};
+  const report = await runBenchmark(tasksPath ? benchmarkWithTasks(tasksPath) : benchmark, adapter, rest);
   return { ...report, truthfulness: truthfulnessMetrics(report.rows) };
 }
 export async function score(taskId: string, submission: Trace) {
