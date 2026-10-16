@@ -90,6 +90,7 @@ export class CrmEnvironment implements Environment {
   callTool(name: string, args: Record<string, JsonValue>): ToolResult {
     const s = this.#scenario;
     if (!s) return this.#error("NOT_READY", "Environment was not reset.");
+    if (typeof args !== "object" || args === null || Array.isArray(args)) return this.#error("BAD_ARGS", "Tool arguments must be an object.");
     const contactId = stringArg(args, "contactId");
     const target = contactId ? this.#contacts.get(contactId) : undefined;
     switch (name) {
