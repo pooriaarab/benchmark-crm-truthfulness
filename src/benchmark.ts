@@ -32,10 +32,10 @@ export const benchmark = defineBenchmark({
     bad: (task) => task.kind === "episode" ? [{ content: "Skipped the tool." }] : [],
   },
   provenance: [{
-    name: "Seeded starter task generator", kind: "synthetic", url: "https://github.com/pooriaarab/benchmark-crm-truthfulness/blob/main/scripts/gen-tasks.mjs",
-    licence: "MIT", howToGet: "Run `node scripts/gen-tasks.mjs` from the repository root.", retrievedAt: "2026-10-15T00:00:00.000Z",
-    contaminationNotes: "Public starter tasks generated with seed 20261015. Keep final evaluation tasks in a separately seeded hidden split.",
-    refresh: "Change the seed, run the generator, and review the JSONL diff.",
+    name: "Seeded fictional CRM scenarios", kind: "synthetic", url: "https://github.com/pooriaarab/benchmark-crm-truthfulness/blob/main/scripts/gen-tasks.mjs",
+    licence: "MIT", howToGet: "The generator combines maintainer-written fact sheets, name lists, and seeded scenario templates. Run `node scripts/gen-tasks.mjs --seed 20261015 --split public` from the repository root.", retrievedAt: "2026-10-16T00:00:00.000Z",
+    contaminationNotes: "The 40 public tasks use seed 20261015. Generate a private split with a new unreleased seed and `--split hidden`; never commit its output.",
+    refresh: "Quarterly, or after a documented grading defect, choose a new seed, regenerate both splits, review scenario and consent counts, and publish only the public JSONL.",
   }],
   gradingMethod: "Exact match for single answers; deterministic state replay for episodes.",
 });
