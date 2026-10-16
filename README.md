@@ -146,3 +146,18 @@ The E2E gate covers all 40 tasks, all CLI commands, every HTTP route, and every 
 ## License
 
 [MIT](LICENSE) © Pooria Arab
+
+## Cite
+
+Please cite this package with its Zenodo DOI. The DOI below names all versions. GitHub also shows a "Cite this repository" box from `CITATION.cff`.
+
+```bibtex
+@software{arab2026benchmarkcrmtruthfulness,
+  author  = {Arab, Pooria},
+  title   = {benchmark-crm-truthfulness},
+  year    = {2026},
+  version = {0.1.0},
+  doi     = {10.5281/zenodo.23422394},
+  url     = {https://private-repo-337e.com/benchmarks/benchmark-crm-truthfulness}
+}
+```
