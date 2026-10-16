@@ -9,6 +9,8 @@
     "agent-benchmark",
     "crm",
     "truthfulness",
+    "commerce",
+    "safety",
     "consent",
     "sales-agent",
     "hallucination",

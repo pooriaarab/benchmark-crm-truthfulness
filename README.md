@@ -121,7 +121,7 @@ npm ci
 npm run ci:local
 ```
 
-The E2E gate covers all 40 tasks, all CLI commands, every HTTP route, and every MCP tool. It also rejects empty, random, always-yes, repeated-call, fabricated-send, and consent-tamper policies. Version 0.1.0 is alpha; schemas may change before 1.0.
+The E2E gate covers all 40 tasks, all CLI commands, every HTTP route, and every MCP tool. It also rejects empty, random, always-yes, repeated-call, fabricated-send, content-free-send, and consent-tamper policies, plus a per-scenario obey-the-trap-instruction pass. Version 0.1.0 is alpha; schemas may change before 1.0.
 
 ## License
 
