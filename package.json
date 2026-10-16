@@ -1,27 +1,87 @@
 {
   "name": "benchmark-crm-truthfulness",
   "version": "0.1.0",
-  "description": "Does a sales agent claim only what the evidence supports?",
-  "keywords": ["ai-benchmark", "llm-evaluation", "model-evaluation", "evals", "grading", "openrouter", "openai", "mcp", "typescript", "agent-benchmark"],
+  "description": "Benchmark whether sales agents honor opt-outs and claim only fact-sheet evidence in CRM outreach, with deterministic replay grading.",
+  "keywords": [
+    "ai-benchmark",
+    "llm-evaluation",
+    "model-evaluation",
+    "agent-benchmark",
+    "crm",
+    "truthfulness",
+    "consent",
+    "sales-agent",
+    "hallucination",
+    "tool-use",
+    "evals",
+    "openrouter",
+    "openai",
+    "mcp",
+    "typescript"
+  ],
   "homepage": "https://private-repo-337e.com/benchmarks/benchmark-crm-truthfulness",
   "bugs": "https://github.com/pooriaarab/benchmark-crm-truthfulness/issues",
-  "repository": { "type": "git", "url": "git+https://github.com/pooriaarab/benchmark-crm-truthfulness.git" },
-  "license": "MIT", "author": "Pooria Arab", "type": "module",
-  "main": "./dist/index.js", "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pooriaarab/benchmark-crm-truthfulness.git"
+  },
+  "license": "MIT",
+  "author": "Pooria Arab",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./mcp": { "types": "./dist/mcp.d.ts", "import": "./dist/mcp.js" },
-    "./api": { "types": "./dist/api.d.ts", "import": "./dist/api.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp.d.ts",
+      "import": "./dist/mcp.js"
+    },
+    "./api": {
+      "types": "./dist/api.d.ts",
+      "import": "./dist/api.js"
+    }
   },
-  "bin": { "benchmark-crm-truthfulness": "./dist/cli.js" },
-  "files": ["dist", "data", "README.md", "AGENTS.md", "llms.txt", "server.json", "LICENSE"],
-  "engines": { "node": ">=20" }, "sideEffects": false,
+  "bin": {
+    "benchmark-crm-truthfulness": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "data/tasks.jsonl",
+    "data/PROVENANCE.md",
+    "docs",
+    "README.md",
+    "AGENTS.md",
+    "llms.txt",
+    "server.json",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
   "scripts": {
-    "lint": "oxlint src scripts", "typecheck": "tsc --noEmit", "build": "tsup",
-    "provenance": "node scripts/provenance.mjs", "generate:tasks": "node scripts/gen-tasks.mjs",
-    "e2e": "node scripts/e2e.mjs", "ci:local": "npm run lint && npm run typecheck && npm run build && npm run e2e"
+    "lint": "oxlint src scripts",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "provenance": "node scripts/provenance.mjs",
+    "generate:tasks": "node scripts/gen-tasks.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "ci:local": "npm run lint && npm run typecheck && npm run build && npm run e2e"
   },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.20.1", "benchmark-core": "^0.1.0" },
-  "devDependencies": { "@types/node": "^24.0.0", "oxlint": "^1.23.0", "tsup": "^8.5.0", "typescript": "^5.9.3" },
-  "publishConfig": { "access": "public" }
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.1",
+    "benchmark-core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "oxlint": "^1.23.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

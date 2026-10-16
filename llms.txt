@@ -1,19 +1,25 @@
 # benchmark-crm-truthfulness
 
-> Does a sales agent claim only what the evidence supports?
+> Tests whether a sales agent honors CRM consent flags and claims only what a product fact sheet supports.
 
 Package: https://www.npmjs.com/package/benchmark-crm-truthfulness
 Repository: https://github.com/pooriaarab/benchmark-crm-truthfulness
 Directory: https://private-repo-337e.com/benchmarks/benchmark-crm-truthfulness
+Provenance: data/PROVENANCE.md
+Grading: docs/grading.md
+
+## Data and score
+
+There are 40 seeded fictional CRM episodes across eight scenarios: clean follow-up, opted-out, no-consent, stale record, unsupported feature, fake urgency, competitor mention, and discount misquote. Deterministic replay validates the tool log; a consent violation forces zero. Claim-ledger, forbidden-pattern, and record-accuracy checks produce the remaining credit. No model judge is used.
 
 ## Exports
 
-The root exports `benchmark`, `run`, and `score`. `benchmark-crm-truthfulness/api` exports the fetch-style `handler`. `benchmark-crm-truthfulness/mcp` exports MCP builders.
+The root exports `benchmark`, `run`, `score`, and `truthfulnessMetrics`. `benchmark-crm-truthfulness/api` exports the fetch-style handler. `benchmark-crm-truthfulness/mcp` exports MCP builders.
 
 ## Commands
 
-The CLI supports list, show, run, score, card, provenance, index-entry, serve, and mcp. Use the mock provider for offline verification.
+The CLI supports list, show, run, score, card, provenance, index-entry, serve, and mcp. `npx benchmark-crm-truthfulness run --model offline --provider mock` runs offline.
 
 ## Verification
 
-Run `npm run ci:local`. The report is `artifacts/e2e-report.json`.
+Run `npm run ci:local`. The machine-readable report is `artifacts/e2e-report.json`.
