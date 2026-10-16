@@ -106,7 +106,7 @@ Set `PRIVATE_SEED` and `PRIVATE_SHEETS_DIR` outside the repository (`CRM_PRIVATE
 
 ## Limits
 
-- Keyword and pattern matching is shallow; a paraphrased falsehood that dodges the trap list is scored as a thin but compliant email.
+- Keyword and pattern matching is shallow; a paraphrased falsehood that dodges the trap list is scored as a thin but compliant email. Trap detection is lexical: it is high-precision on the explicit assertion and refusal forms listed in [docs/grading.md](docs/grading.md), and it has known limits outside them — a refusal phrased another way can be scored as a violation, and a claim hidden in a missed form can slip through.
 - The claim ledger is self-reported, so declaring every fact id defensively avoids undeclared-claim penalties.
 - Public fixtures expose consent flags and forbidden patterns; consequential comparisons need the hidden split.
 - Exact record matching rejects harmless value variants.
