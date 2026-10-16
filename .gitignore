@@ -2,3 +2,4 @@ node_modules/
 dist/
 artifacts/
 *.tgz
+data/tasks.hidden.jsonl
