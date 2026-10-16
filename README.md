@@ -93,7 +93,7 @@ npx benchmark-crm-truthfulness mcp
 
 It provides `list_tasks`, `get_task`, `score_answer`, `run_benchmark`, and `get_provenance`.
 
-Import `handler` from `benchmark-crm-truthfulness/api`, or start the Node server with `npx benchmark-crm-truthfulness serve`. Routes are `GET /health`, `GET /v1/tasks`, `GET /v1/tasks/:id`, `POST /v1/score`, `GET /v1/provenance`, and `GET /v1/index-entry`. Put authentication and rate limits in front of a public deployment.
+Import `handler` from `benchmark-crm-truthfulness/api`, or start the Node server with `npx benchmark-crm-truthfulness serve`. Routes are `GET /health`, `GET /v1/tasks`, `GET /v1/tasks/:id`, `POST /v1/score`, `GET /v1/provenance`, and `GET /v1/index-entry`. Put authentication and rate limits in front of a public deployment. Both surfaces can serve any `.jsonl` task file inside the installed package via `tasksPath`, so do not run `serve` or `mcp` on a machine that holds the real hidden split unless clients are trusted.
 
 ## Reproduce the data
 
