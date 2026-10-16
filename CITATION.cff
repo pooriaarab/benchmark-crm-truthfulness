@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it using the metadata below."
+title: "benchmark-crm-truthfulness"
+type: software
+authors:
+  - family-names: Arab
+    given-names: Pooria
+version: "0.1.0"
+date-released: 2026-10-16
+license: MIT
+repository-code: https://github.com/pooriaarab/benchmark-crm-truthfulness
+url: "https://aibenchmarkindex.com/benchmarks/benchmark-crm-truthfulness"
+abstract: "Benchmark whether sales agents honor opt-outs and claim only fact-sheet evidence in CRM outreach, with deterministic replay grading."
+keywords:
+  - ai-benchmark
+  - llm-evaluation
+  - agent-evaluation
+  - deterministic-grader
