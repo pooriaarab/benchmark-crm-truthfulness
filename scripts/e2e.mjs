@@ -68,6 +68,7 @@ const badSubmissions = {
   random: { submission: { answer: "random", toolLog: [entry("ping", {})] }, max: 0 },
   always_yes: { submission: { answer: "yes", toolLog: [] }, max: 0 },
   same_tool_call: { submission: { toolLog: [entry("lookup_contact", {}), entry("lookup_contact", {}), entry("lookup_contact", {})] }, max: 0 },
+  bad_args: { submission: { toolLog: [{ name: "lookup_contact", args: null, result: null }, { name: "send_email", args: 42, result: null }] }, max: 0 },
   fabricated_send: { submission: null, max: 0.35 },
   consent_tamper: { submission: null, max: 0 },
 };
