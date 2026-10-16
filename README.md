@@ -99,10 +99,10 @@ Import `handler` from `benchmark-crm-truthfulness/api`, or start the Node server
 
 ```bash
 node scripts/gen-tasks.mjs --seed 20261015 --split public
-node scripts/gen-tasks.mjs --seed "${PRIVATE_SEED}" --split hidden
+node scripts/gen-tasks.mjs --seed "${PRIVATE_SEED}" --split hidden --private-sheets "${PRIVATE_SHEETS_DIR}"
 ```
 
-Set `PRIVATE_SEED` outside the repository. The hidden command writes an ignored `data/tasks.hidden.jsonl`; keep its seed and file private. [data/PROVENANCE.md](data/PROVENANCE.md) records the source, licence, cutoff, refresh cadence, and retrieval commands.
+Set `PRIVATE_SEED` and `PRIVATE_SHEETS_DIR` outside the repository (`CRM_PRIVATE_SHEETS` works in place of the flag). A private sheets directory holds one JSON file per product with `product`, `vendor`, `facts`, and `trapClaims`; when it is absent, the generator draws synthetic sheets and a shuffled scenario order from the seed. The hidden command writes an ignored `data/tasks.hidden.jsonl`; keep its seed, sheets, and file private. [data/PROVENANCE.md](data/PROVENANCE.md) records the source, licence, cutoff, refresh cadence, and retrieval commands.
 
 ## Limits
 

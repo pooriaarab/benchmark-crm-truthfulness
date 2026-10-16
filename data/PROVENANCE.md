@@ -9,5 +9,5 @@ This file is generated from the benchmark definition.
 - Licence: `MIT`
 - Retrieved: 2026-10-15T00:00:00.000Z
 - How to get it: The generator combines maintainer-written fact sheets, name lists, and seeded scenario templates. Run `node scripts/gen-tasks.mjs --seed 20261015 --split public` from the repository root.
-- Contamination notes: The 40 public tasks use seed 20261015. Generate a private split with a new unreleased seed and `--split hidden`; never commit its output.
+- Contamination notes: The 40 public tasks use seed 20261015. Generate a private split with a new unreleased seed and `--split hidden`; pass maintainer-held sheets with `--private-sheets <dir>` or `CRM_PRIVATE_SHEETS`, otherwise the generator draws synthetic sheets and a shuffled scenario order from the seed. Never commit its output.
 - Refresh: Quarterly, or after a documented grading defect, choose a new seed, regenerate both splits, review scenario and consent counts, and publish only the public JSONL.
