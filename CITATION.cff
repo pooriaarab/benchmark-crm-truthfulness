@@ -17,3 +17,11 @@ keywords:
   - llm-evaluation
   - agent-evaluation
   - deterministic-grader
+preferred-citation:
+  type: report
+  title: "CRM Truthfulness: Consent, Evidence, and Record Integrity in Sales Agents"
+  authors:
+    - family-names: Arab
+      given-names: Pooria
+      orcid: "https://orcid.org/0009-0005-9964-6841"
+  url: "https://github.com/pooriaarab/benchmark-crm-truthfulness/tree/main/paper"
