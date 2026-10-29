@@ -24,4 +24,6 @@ preferred-citation:
     - family-names: Arab
       given-names: Pooria
       orcid: "https://orcid.org/0009-0005-9964-6841"
-  url: "https://github.com/pooriaarab/benchmark-crm-truthfulness/tree/main/paper"
+  doi: 10.5281/zenodo.23752395
+  url: "https://doi.org/10.5281/zenodo.23752395"
+  license: CC-BY-4.0
