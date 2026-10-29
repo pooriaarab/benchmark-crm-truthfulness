@@ -1,5 +1,7 @@
 # benchmark-crm-truthfulness
 
+Paper: [10.5281/zenodo.23752395](https://doi.org/10.5281/zenodo.23752395).
+
 [![npm](https://img.shields.io/npm/v/benchmark-crm-truthfulness)](https://www.npmjs.com/package/benchmark-crm-truthfulness) [![CI](https://github.com/pooriaarab/benchmark-crm-truthfulness/actions/workflows/ci.yml/badge.svg)](https://github.com/pooriaarab/benchmark-crm-truthfulness/actions/workflows/ci.yml) [![license](https://img.shields.io/npm/l/benchmark-crm-truthfulness)](./LICENSE) [![types](https://img.shields.io/badge/TypeScript-types-3178c6)](#sdk)
 
 [AI Benchmark Index](https://private-repo-337e.com/benchmarks/benchmark-crm-truthfulness) · [npm](https://www.npmjs.com/package/benchmark-crm-truthfulness) · [grading](docs/grading.md) · [provenance](data/PROVENANCE.md)
