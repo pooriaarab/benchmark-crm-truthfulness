@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "title": "CRM Truthfulness: Consent, Evidence, and Record Integrity in Sales Agents",
+  "abstract": "CRM Truthfulness evaluates sales-agent actions against consent records and product evidence. It contains 40 fictional episodes across 8 scenarios. We study scripted controls and a simulated factorial ablation, using replay rather than an agent's claimed final state. The packaged compliant control has full-credit rate 40/40; 1.000 [0.912, 1.000] (95% Wilson interval). Empty, constant, echo, refusal, and first-tool controls earn no credit. Removing lookup leaves scores unchanged, exposing a process-coverage limit. Simulated consent removal produces forbidden-contact violation rate 10/10; 1.000 [0.722, 1.000] (95% Wilson interval). Claim and record controls affect distinct score components. All 16 conditions reproduce their semantic traces. These are privileged scripted experiments, not learned-model results. Lexical claim checks, public templates, and the lack of human validation limit external conclusions.",
+  "authors": [
+    {
+      "name": "Pooria Arab",
+      "affiliation": "Independent researcher",
+      "orcid": "https://orcid.org/0009-0005-9964-6841"
+    }
+  ],
+  "license": "CC-BY-4.0",
+  "keywords": [
+    "CRM",
+    "truthfulness",
+    "consent",
+    "agent evaluation",
+    "simulated ablation"
+  ],
+  "code_url": "https://github.com/pooriaarab/benchmark-crm-truthfulness",
+  "artifact_name": "crm-truthfulness-paper.pdf"
+}

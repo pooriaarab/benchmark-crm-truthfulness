@@ -4,3 +4,11 @@ artifacts/
 *.tgz
 data/tasks.hidden.jsonl
 data/tasks.e2e-*.jsonl
+paper/*.pdf
+paper/*.log
+paper/*.blg
+paper/*.aux
+paper/*.bbl
+paper/*.out
+paper/.style.zip
+paper/neurips_2026.sty
